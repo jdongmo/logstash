@@ -32,7 +32,9 @@
       ***SECURITY RISK***: You are currently using the included/default SSL key
       pair. Please generate your own secure key pair if using this playbook for
       any kind of production purposes!
-  when: "logstash_ssl_certificate_file.find('-example.crt') != -1"
+  when:
+    - logstash_ssl_certificate_file | default('', true) != ''
+    - "logstash_ssl_certificate_file.find('-example.crt') != -1"
 
 - name: Copy SSL key and cert for logstash-forwarder.
   copy:
@@ -42,5 +44,7 @@
   with_items:
     - "{{ logstash_ssl_key_file }}"
     - "{{ logstash_ssl_certificate_file }}"
-    - "{{ logstash_ssl_ca_file | default(omit, true) }}"
+    - "{{ logstash_ssl_ca_file }}"
+  when:
+    - logstash_ssl_certificate_file | default('', true) != ''
 ...
