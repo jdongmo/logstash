@@ -22,6 +22,15 @@
     - pipelines.yml
     - startup.options
 
+- name: index mapping files.
+  template:
+    src: mapping.json.j2
+    dest: "{{ logstash_pipeline_dir }}/{{ item.file }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items: "{{ logstash_es_template }}"
+
 - name: Pipeline configuration.
   include: pipeline.yml
   with_items: "{{ logstash_pipelines }}"
